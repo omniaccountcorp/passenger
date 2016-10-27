@@ -93,9 +93,9 @@ namespace :load do
     set :passenger_restart_limit, 2
     set :passenger_restart_with_sudo, false
     set :passenger_environment_variables, {}
-    set :passenger_stop_command, 'passenger stop -i'
+    set :passenger_stop_command, 'passenger stop'
     set :passenger_start_command, 'passenger start'
-    set :passenger_stop_options, -> { "#{deploy_to}" }
+    set :passenger_stop_options, -> { "#{deploy_to} -i" }
     set :passenger_start_options, -> { "#{deploy_to}" }
     set :passenger_rvm_ruby_version, ->{ fetch(:rvm_ruby_version) }
     _tasks = Rake.application.tasks.collect(&:to_s)
