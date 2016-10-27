@@ -95,8 +95,8 @@ namespace :load do
     set :passenger_environment_variables, {}
     set :passenger_stop_command, 'passenger stop -i'
     set :passenger_start_command, 'passenger start'
-    set :passenger_stop_options, -> { "#{deploy_to} -i" }
-    set :passenger_start_options, -> { "#{deploy_to} -i" }
+    set :passenger_stop_options, -> { "#{deploy_to}" }
+    set :passenger_start_options, -> { "#{deploy_to}" }
     set :passenger_rvm_ruby_version, ->{ fetch(:rvm_ruby_version) }
     _tasks = Rake.application.tasks.collect(&:to_s)
     if _tasks.include?("bundler:map_bins")
