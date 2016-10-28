@@ -34,7 +34,7 @@ namespace :passenger do
               start_command = [:sudo, SSHKit::Command.new(*start_command).to_s]
               restart_command = [:sudo, SSHKit::Command.new(*restart_command).to_s]
             end
-            if File.exist?("#{deploy_to}/tmp/pids/passenger.3000.pid")
+            if File.exist?("#{deploy_to}/shared/tmp/pids/passenger.3000.pid")
               execute *restart_command
             else
               execute *start_command
@@ -103,7 +103,7 @@ namespace :load do
     set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
     set :passenger_start_command, 'passenger start -d'
     set :passenger_stop_options, -> { "#{deploy_to} -i" }
-    set :passenger_start_options, -> { "#{deploy_to}" }
+    set :passenger_start_options, -> { "#{deploy_to}/shared/tmp/pids" }
     set :passenger_rvm_ruby_version, ->{ fetch(:rvm_ruby_version) }
     _tasks = Rake.application.tasks.collect(&:to_s)
     if _tasks.include?("bundler:map_bins")
