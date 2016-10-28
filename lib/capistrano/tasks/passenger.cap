@@ -25,7 +25,7 @@ namespace :passenger do
             execute :mkdir, '-p', release_path.join('tmp')
             execute :touch, release_path.join('tmp/restart.txt')
           else
-            stop_command = fetch(:passenger_stop_command).split(" ").collect(&:to_sym) << fetch(:passenger_stop_options)
+            stop_command = fetch(:passenger_stop_command).split(" ").collect(&:to_sym) << fetch(:passenger_stop_options) << '; exit 0'
             restart_command = fetch(:passenger_restart_command).split(" ").collect(&:to_sym) << fetch(:passenger_restart_options)
             start_command = fetch(:passenger_start_command).split(" ").collect(&:to_sym) << fetch(:passenger_start_options)
             if fetch(:passenger_restart_with_sudo)
@@ -34,11 +34,8 @@ namespace :passenger do
               start_command = [:sudo, SSHKit::Command.new(*start_command).to_s]
               restart_command = [:sudo, SSHKit::Command.new(*restart_command).to_s]
             end
-            if File.exist?("#{deploy_to}/shared/tmp/pids/passenger.3000.pid")
-              execute *restart_command
-            else
-              execute *start_command
-            end
+            execute *stop_command
+            execute *start_command
           end
         end
       end
@@ -102,7 +99,7 @@ namespace :load do
     set :passenger_restart_command, 'passenger-config restart-app'
     set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
     set :passenger_start_command, 'passenger start -d'
-    set :passenger_stop_options, -> { "#{deploy_to} -i" }
+    set :passenger_stop_options, -> { "#{deploy_to}/shared/tmp/pids -i" }
     set :passenger_start_options, -> { "#{deploy_to}/shared/tmp/pids" }
     set :passenger_rvm_ruby_version, ->{ fetch(:rvm_ruby_version) }
     _tasks = Rake.application.tasks.collect(&:to_s)
