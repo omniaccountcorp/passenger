@@ -32,7 +32,9 @@ namespace :passenger do
               stop_command = [:sudo, SSHKit::Command.new(*stop_command).to_s]
               start_command = [:sudo, SSHKit::Command.new(*start_command).to_s]
             end
-            execute *stop_command
+            if File.exist?("#{deploy_to}/tmp/pids/passenger*")
+              execute *stop_command
+            end
             execute *start_command
           end
         end
